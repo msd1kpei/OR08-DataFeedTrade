@@ -1,0 +1,632 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Mon Jan 17 15:10:44 ICT 2011
+  Author:  Administrator
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="DataTradeBPEL"
+               targetNamespace="http://xmlns.oracle.com/ARIS_KPEI_PROJECT_jws/OR08_DataFeedTrade/DataTradeBPEL"
+               xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+               xmlns:client="http://xmlns.oracle.com/ARIS_KPEI_PROJECT_jws/OR08_DataFeedTrade/DataTradeBPEL"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+               xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:ns1="http://xmlns.oracle.com/pcbpel/adapter/file/KPEIMID/OR08-DataFeedTrade/writeFA"
+         xmlns:ns2="http://kpei.co.id/MDwsReply.xsd"
+         xmlns:ns3="http://xmlns.oracle.com/pcbpel/adapter/file/ARIS-KPEI-PROJECT/OR08-DataFeedTrade/writeFileDataTrade"
+         xmlns:ns4="http://www.kpei.co.id/razor/Equity"
+         xmlns:ns6="http://TargetNamespace.com/writeFileDataTrade"
+         xmlns:ns5="http://www.kpei.co.id/DataTradeRequest"
+         xmlns:xpath20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:mhdr="http://www.oracle.com/XSL/Transform/java/oracle.tip.mediator.service.common.functions.MediatorExtnFunction"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:med="http://schemas.oracle.com/mediator/xpath"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:socket="http://www.oracle.com/XSL/Transform/java/oracle.tip.adapter.socket.ProtocolTranslator"
+         xmlns:ns7="http://xmlns.oracle.com/pcbpel/adapter/file/ARIS-KPEI-PROJECT/OR08-DataFeedTrade/writeFileDataTradeDummy"
+         xmlns:ns8="http://xmlns.oracle.com/pcbpel/adapter/opaque/"
+         xmlns:ns9="http://TargetNamespace.com/ServiceName"
+         xmlns:ns10="http://TargetNamespace.com/InboundService"
+         xmlns:ns11="http://xmlns.oracle.com/pcbpel/adapter/ftp/ARIS-KPEI-PROJECT/OR08-DataFeedTrade/ftpDataTrade"
+         xmlns:ns12="http://www.kpei.co.id/InboundService"
+         xmlns:ns13="http://www.kpei.co.id/writeFileDataTrade"
+         xmlns:ns14="http://xmlns.oracle.com/pcbpel/adapter/ftp/ARIS-KPEI-PROJECT/OR08-DataFeedTrade/ftpDataTradeDummy"
+         xmlns:ns15="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:ns16="http://xmlns.oracle.com/pcbpel/adapter/db/ARIS-KPEI-PROJECT/OR08-DataFeedTrade/REF_CA_Select"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:ns17="http://xmlns.oracle.com/pcbpel/adapter/db/top/REF_CA_Select"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:ns18="http://xmlns.oracle.com/pcbpel/adapter/db/ARIS-KPEI-PROJECT/OR08-DataFeedTrade/REF_CA_delete"
+         xmlns:ns19="http://xmlns.oracle.com/pcbpel/adapter/db/ARIS-KPEI-PROJECT/OR08-DataFeedTrade/REF_CA_insert"
+         xmlns:ns20="http://xmlns.oracle.com/pcbpel/adapter/db/top/REF_CA_delete"
+         xmlns:ns21="http://oracle.com/sca/soapservice/kpei/GE03-XMLUtility/GE03_XMLUtility"
+         xmlns:ns22="http://www.kpei.co.id/GE03-XMLUtility/types">
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      PARTNERLINKS                                                      
+      List of services participating in this BPEL process               
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="PDC-DataTrade" partnerLinkType="client:DataTradeBPEL" myRole="DataTradeBPELProvider"/>
+    <partnerLink name="writeFileDataTrade" partnerRole="Write_role"
+                 partnerLinkType="ns3:Write_plt"/>
+    <partnerLink name="writeFileDataTradeDummy" partnerRole="Write_role"
+                 partnerLinkType="ns7:Write_plt"/>
+    <partnerLink name="xmlUtilityRef" partnerRole="GE03-XMLUtility"
+                 partnerLinkType="ns21:xmlUtilityRef"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:DataTradeBPELRequestMessage"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:DataTradeBPELResponseMessage"/>
+    <variable name="write_file_Write_InputVariable"
+              messageType="ns3:Write_msg"/>
+    <variable name="invalidVar" messageType="bpelx:RuntimeFaultMessage"/>
+    <variable name="validation_error_sendDataTrade_OutputVariable"
+              messageType="client:DataTradeBPELResponseMessage"/>
+    <variable name="FileName" type="xsd:string"/>
+    <variable name="write_file_dummy_Write_InputVariable"
+              messageType="ns7:Write_msg"/>
+    <variable name="isDummy" type="xsd:string"/>
+    <variable name="Data_Trade_In_NG" element="ns5:DataTrade"/>
+    <variable name="Data_Trade_In_RG" element="ns5:DataTrade"/>
+    <variable name="Data_Trade_In_TN" element="ns5:DataTrade"/>
+    <variable name="write_file_rg_dummy_Write_InputVariable"
+              messageType="ns7:Write_msg"/>
+    <variable name="write_file_tn_dummy_Write_InputVariable"
+              messageType="ns7:Write_msg"/>
+    <variable name="write_file_rg_Write_InputVariable"
+              messageType="ns3:Write_msg"/>
+    <variable name="write_file_tn_Write_InputVariable"
+              messageType="ns3:Write_msg"/>
+    <variable name="getDirNG_getLogicalDirectory_InputVariable"
+              messageType="ns21:getLogicalDirectoryRequestMessage"/>
+    <variable name="getDirNG_getLogicalDirectory_OutputVariable"
+              messageType="ns21:getLogicalDirectoryReplyMessage"/>
+    <variable name="getDirTN_getLogicalDirectory_InputVariable"
+              messageType="ns21:getLogicalDirectoryRequestMessage"/>
+    <variable name="getDirTN_getLogicalDirectory_OutputVariable"
+              messageType="ns21:getLogicalDirectoryReplyMessage"/>
+    <variable name="getDirRG_getLogicalDirectory_InputVariable"
+              messageType="ns21:getLogicalDirectoryRequestMessage"/>
+    <variable name="getDirRG_getLogicalDirectory_OutputVariable"
+              messageType="ns21:getLogicalDirectoryReplyMessage"/>
+  </variables>
+  <faultHandlers>
+    <catch faultName="bpelx:invalidVariables" faultVariable="invalidVar">
+      <sequence name="error_handling_invalid_variable">
+        <assign name="assign_invalid_variable">
+          <copy>
+            <from expression="xpath20:current-dateTime()"/>
+            <to variable="validation_error_sendDataTrade_OutputVariable"
+                part="payload" query="/ns2:wsReply/ns2:receiveDateTime"/>
+          </copy>
+          <copy>
+            <from expression="'ERROR'"/>
+            <to variable="validation_error_sendDataTrade_OutputVariable"
+                part="payload" query="/ns2:wsReply/ns2:status"/>
+          </copy>
+          <copy>
+            <from expression="string(bpws:getVariableData('invalidVar','summary'))"/>
+            <to variable="validation_error_sendDataTrade_OutputVariable"
+                part="payload" query="/ns2:wsReply/ns2:description"/>
+          </copy>
+        </assign>
+        <reply name="validation_error"
+               variable="validation_error_sendDataTrade_OutputVariable"
+               partnerLink="PDC-DataTrade" portType="client:DataTradeBPEL"
+               operation="sendDataTrade"/>
+      </sequence>
+    </catch>
+    <catchAll>
+      <sequence name="catch_all_error_handling">
+        <assign name="assign_fault">
+          <copy>
+            <from expression="xpath20:current-dateTime()"/>
+            <to variable="outputVariable" part="payload"
+                query="/ns2:wsReply/ns2:receiveDateTime"/>
+          </copy>
+          <copy>
+            <from expression="'ERROR'"/>
+            <to variable="outputVariable" part="payload"
+                query="/ns2:wsReply/ns2:status"/>
+          </copy>
+          <copy>
+            <from expression="concat('[PDC001] Error pada DataTradeBPEL, InstanceId=',string(ora:getInstanceId()))"/>
+            <to variable="outputVariable" part="payload"
+                query="/ns2:wsReply/ns2:description"/>
+          </copy>
+        </assign>
+        <reply name="reply_fault" variable="outputVariable"
+               partnerLink="PDC-DataTrade" portType="client:DataTradeBPEL"
+               operation="sendDataTrade"/>
+      </sequence>
+    </catchAll>
+  </faultHandlers>
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in DataTradeBPEL.wsdl) -->
+    <receive name="receiveInput" partnerLink="PDC-DataTrade" portType="client:DataTradeBPEL" operation="sendDataTrade" variable="inputVariable" createInstance="yes"/>
+
+    <!-- Generate reply to synchronous request -->
+    <bpelx:validate name="input_validation" variables="inputVariable"/>
+    <sequence name="getDirectoryeClears">
+      <assign name="Assign_Config">
+        <copy>
+          <from expression="'OR08-DataFeedTrade-eclears-NG'"/>
+          <to variable="getDirNG_getLogicalDirectory_InputVariable"
+              part="request"
+              query="/ns22:getLogicalDirectoryRequest/ns22:logicalDirectoryName"/>
+        </copy>
+        <copy>
+          <from expression="'OR08-DataFeedTrade-eclears-RG'"/>
+          <to variable="getDirRG_getLogicalDirectory_InputVariable"
+              part="request"
+              query="/ns22:getLogicalDirectoryRequest/ns22:logicalDirectoryName"/>
+        </copy>
+        <copy>
+          <from expression="'OR08-DataFeedTrade-eclears-TN'"/>
+          <to variable="getDirTN_getLogicalDirectory_InputVariable"
+              part="request"
+              query="/ns22:getLogicalDirectoryRequest/ns22:logicalDirectoryName"/>
+        </copy>
+        <copy>
+          <from expression="concat(string(bpws:getVariableData('inputVariable','payload','/ns5:DataTrade/ns5:session')),xpath20:format-dateTime(xpath20:current-dateTime(),'[Y0001][M01][D01][H01][m01][s01]'),ora:getCompositeInstanceId(),'.sxt')"/>
+          <to variable="FileName"/>
+        </copy>
+      </assign>
+      <invoke name="getDirNG"
+              inputVariable="getDirNG_getLogicalDirectory_InputVariable"
+              outputVariable="getDirNG_getLogicalDirectory_OutputVariable"
+              partnerLink="xmlUtilityRef" portType="ns21:GE03-XMLUtility"
+              operation="getLogicalDirectory"/>
+      <invoke name="getDirRG"
+              inputVariable="getDirRG_getLogicalDirectory_InputVariable"
+              outputVariable="getDirRG_getLogicalDirectory_OutputVariable"
+              partnerLink="xmlUtilityRef" portType="ns21:GE03-XMLUtility"
+              operation="getLogicalDirectory"/>
+      <invoke name="getDirTN"
+              inputVariable="getDirTN_getLogicalDirectory_InputVariable"
+              outputVariable="getDirTN_getLogicalDirectory_OutputVariable"
+              partnerLink="xmlUtilityRef" portType="ns21:GE03-XMLUtility"
+              operation="getLogicalDirectory"/>
+    </sequence>
+    <sequence name="BoardCode_Spliter">
+      <assign name="Data_Trade_NG_collect">
+        <bpelx:annotation>
+          <bpelx:pattern>transformation</bpelx:pattern>
+        </bpelx:annotation>
+        <copy>
+          <from expression="ora:processXSLT('xsl/Data_Trade_NG_collect.xsl',bpws:getVariableData('inputVariable','payload'))"/>
+          <to variable="Data_Trade_In_NG"/>
+        </copy>
+      </assign>
+      <assign name="Data_Trade_RG_collect">
+        <bpelx:annotation>
+          <bpelx:pattern>transformation</bpelx:pattern>
+        </bpelx:annotation>
+        <copy>
+          <from expression="ora:processXSLT('xsl/Data_Trade_RG_collect.xsl',bpws:getVariableData('inputVariable','payload'))"/>
+          <to variable="Data_Trade_In_RG"/>
+        </copy>
+      </assign>
+      <assign name="Data_Trade_TN_collect">
+        <bpelx:annotation>
+          <bpelx:pattern>transformation</bpelx:pattern>
+        </bpelx:annotation>
+        <copy>
+          <from expression="ora:processXSLT('xsl/Data_Trade_TN_collect.xsl',bpws:getVariableData('inputVariable','payload'))"/>
+          <to variable="Data_Trade_In_TN"/>
+        </copy>
+      </assign>
+    </sequence>
+    <switch name="check_isDummy">
+      <case condition="(oraext:compare-ignore-case(oraext:left-trim(oraext:right-trim(string(bpws:getVariableData('Data_Trade_In_NG','/ns5:DataTrade/ns5:isDummy')))),'yes') = 0) or (oraext:compare-ignore-case(oraext:left-trim(oraext:right-trim(string(bpws:getVariableData('Data_Trade_In_NG','/ns5:DataTrade/ns5:isDummy')))),'true') = 0) or (oraext:compare-ignore-case(oraext:left-trim(oraext:right-trim(string(bpws:getVariableData('Data_Trade_In_RG','/ns5:DataTrade/ns5:isDummy')))),'yes') = 0) or (oraext:compare-ignore-case(oraext:left-trim(oraext:right-trim(string(bpws:getVariableData('Data_Trade_In_RG','/ns5:DataTrade/ns5:isDummy')))),'true') = 0) or (oraext:compare-ignore-case(oraext:left-trim(oraext:right-trim(string(bpws:getVariableData('Data_Trade_In_TN','/ns5:DataTrade/ns5:isDummy')))),'yes') = 0) or (oraext:compare-ignore-case(oraext:left-trim(oraext:right-trim(string(bpws:getVariableData('Data_Trade_In_TN','/ns5:DataTrade/ns5:isDummy')))),'true') = 0)">
+        <bpelx:annotation>
+          <bpelx:general>
+            <bpelx:property name="userLabel">if_isDummy</bpelx:property>
+          </bpelx:general>
+        </bpelx:annotation>
+        <sequence name="Data_Trade_Dummy">
+          <scope name="Write_Dummy_Process">
+            <variables>
+              <variable name="FaultVar"
+                        messageType="bpelx:RuntimeFaultMessage"/>
+              <variable name="error_write_dummy_sendDataTrade_OutputVariable"
+                        messageType="client:DataTradeBPELResponseMessage"/>
+              <variable name="Filename_NG" type="xsd:string"/>
+              <variable name="Filename_RG" type="xsd:string"/>
+              <variable name="Filename_TN" type="xsd:string"/>
+            </variables>
+            <faultHandlers>
+              <catch faultName="bpelx:bindingFault" faultVariable="FaultVar">
+                <sequence name="handling_write_dummy">
+                  <assign name="assign_write_dummy_error">
+                    <copy>
+                      <from expression="xpath20:current-dateTime()"/>
+                      <to variable="error_write_dummy_sendDataTrade_OutputVariable"
+                          part="payload"
+                          query="/ns2:wsReply/ns2:receiveDateTime"/>
+                    </copy>
+                    <copy>
+                      <from expression="'ERROR'"/>
+                      <to variable="error_write_dummy_sendDataTrade_OutputVariable"
+                          part="payload" query="/ns2:wsReply/ns2:status"/>
+                    </copy>
+                    <copy>
+                      <from expression="string(bpws:getVariableData('FaultVar','summary'))"/>
+                      <to variable="error_write_dummy_sendDataTrade_OutputVariable"
+                          part="payload" query="/ns2:wsReply/ns2:description"/>
+                    </copy>
+                  </assign>
+                  <reply name="error_write_dummy"
+                         variable="error_write_dummy_sendDataTrade_OutputVariable"
+                         partnerLink="PDC-DataTrade"
+                         portType="client:DataTradeBPEL"
+                         operation="sendDataTrade"/>
+                  <terminate name="terminate_write_dummy"/>
+                </sequence>
+              </catch>
+            </faultHandlers>
+            <sequence name="Sequence_Dummy">
+              <switch name="NG_Dummy">
+                <case condition="ora:countNodes('Data_Trade_In_NG','/ns5:DataTrade/ns5:body/ns5:trade') > 0">
+                  <bpelx:annotation>
+                    <bpelx:general>
+                      <bpelx:property name="userLabel">NG_Dummy</bpelx:property>
+                    </bpelx:general>
+                  </bpelx:annotation>
+                  <sequence name="Sequence_NG_Dummy">
+                    <assign name="filename_ng">
+                      <copy>
+                        <from expression="concat('DT_IDXN',substring-before(bpws:getVariableData('FileName'),'.sxt'),'NG')"/>
+                        <to variable="Filename_NG"/>
+                      </copy>
+                    </assign>
+                    <assign name="data_trade_ng">
+                      <copy>
+                        <from variable="Filename_NG"/>
+                        <to variable="write_file_dummy_Write_InputVariable"
+                            part="body" query="/ns12:fields/ns12:field"/>
+                      </copy>
+                      <copy>
+                        <from expression="concat(bpws:getVariableData('Filename_NG'),'.sxt')"/>
+                        <to variable="Filename_NG"/>
+                      </copy>
+                    </assign>
+                    <invoke name="write_file_dummy"
+                            inputVariable="write_file_dummy_Write_InputVariable"
+                            partnerLink="writeFileDataTradeDummy"
+                            portType="ns7:Write_ptt" operation="Write">
+                      <bpelx:inputProperty name="jca.file.Directory"
+                                           variable="getDirNG_getLogicalDirectory_OutputVariable"
+                                           part="reply"
+                                           query="/ns22:getLogicalDirectoryReply/ns22:logicalDirectory/ns22:physicalPath"/>
+                      <bpelx:inputProperty name="jca.file.FileName"
+                                           variable="Filename_NG"/>
+                    </invoke>
+                  </sequence>
+                </case>
+                <otherwise/>
+              </switch>
+              <switch name="RG_Dummy">
+                <case condition="ora:countNodes('Data_Trade_In_RG','/ns5:DataTrade/ns5:body/ns5:trade') > 0">
+                  <bpelx:annotation>
+                    <bpelx:general>
+                      <bpelx:property name="userLabel">RG_Dummy</bpelx:property>
+                    </bpelx:general>
+                  </bpelx:annotation>
+                  <sequence name="Sequence_RG_Dummy">
+                    <assign name="filename_rg">
+                      <copy>
+                        <from expression="concat('DT_IDXN',substring-before(bpws:getVariableData('FileName'),'.sxt'),'RG')"/>
+                        <to variable="Filename_RG"/>
+                      </copy>
+                    </assign>
+                    <assign name="data_trade_rg">
+                      <copy>
+                        <from variable="Filename_RG"/>
+                        <to variable="write_file_rg_dummy_Write_InputVariable"
+                            part="body" query="/ns12:fields/ns12:field"/>
+                      </copy>
+                      <copy>
+                        <from expression="concat(bpws:getVariableData('Filename_RG'),'.sxt')"/>
+                        <to variable="Filename_RG"/>
+                      </copy>
+                    </assign>
+                    <invoke name="write_file_rg_dummy"
+                            inputVariable="write_file_rg_dummy_Write_InputVariable"
+                            partnerLink="writeFileDataTradeDummy"
+                            portType="ns7:Write_ptt" operation="Write">
+                      <bpelx:inputProperty name="jca.file.Directory"
+                                           variable="getDirRG_getLogicalDirectory_OutputVariable"
+                                           part="reply"
+                                           query="/ns22:getLogicalDirectoryReply/ns22:logicalDirectory/ns22:physicalPath"/>
+                      <bpelx:inputProperty name="jca.file.FileName"
+                                           variable="Filename_RG"/>
+                    </invoke>
+                  </sequence>
+                </case>
+                <otherwise/>
+              </switch>
+              <switch name="TN_Dummy">
+                <case condition="ora:countNodes('Data_Trade_In_TN','/ns5:DataTrade/ns5:body/ns5:trade') > 0">
+                  <bpelx:annotation>
+                    <bpelx:general>
+                      <bpelx:property name="userLabel">TN_Dummy</bpelx:property>
+                    </bpelx:general>
+                  </bpelx:annotation>
+                  <sequence name="Sequence_TN">
+                    <assign name="filename_tn">
+                      <copy>
+                        <from expression="concat('DT_IDXN',substring-before(bpws:getVariableData('FileName'),'.sxt'),'TN')"/>
+                        <to variable="Filename_TN"/>
+                      </copy>
+                    </assign>
+                    <assign name="data_trade_tn">
+                      <copy>
+                        <from variable="Filename_TN"/>
+                        <to variable="write_file_tn_dummy_Write_InputVariable"
+                            part="body" query="/ns12:fields/ns12:field"/>
+                      </copy>
+                      <copy>
+                        <from expression="concat(bpws:getVariableData('Filename_TN'),'.sxt')"/>
+                        <to variable="Filename_TN"/>
+                      </copy>
+                    </assign>
+                    <invoke name="write_file_tn_dummy"
+                            inputVariable="write_file_tn_dummy_Write_InputVariable"
+                            partnerLink="writeFileDataTradeDummy"
+                            portType="ns7:Write_ptt" operation="Write">
+                      <bpelx:inputProperty name="jca.file.Directory"
+                                           variable="getDirTN_getLogicalDirectory_OutputVariable"
+                                           part="reply"
+                                           query="/ns22:getLogicalDirectoryReply/ns22:logicalDirectory/ns22:physicalPath"/>
+                      <bpelx:inputProperty name="jca.file.FileName"
+                                           variable="Filename_TN"/>
+                    </invoke>
+                  </sequence>
+                </case>
+                <otherwise/>
+              </switch>
+              <assign name="Assign_isDummy">
+                <copy>
+                  <from expression="'1'"/>
+                  <to variable="isDummy"/>
+                </copy>
+              </assign>
+            </sequence>
+          </scope>
+        </sequence>
+      </case>
+      <otherwise>
+        <sequence name="Data_Trade">
+          <scope name="Write_Data_Process">
+            <variables>
+              <variable name="FaultVar_1"
+                        messageType="bpelx:RuntimeFaultMessage"/>
+              <variable name="error_write_file_sendDataTrade_OutputVariable"
+                        messageType="client:DataTradeBPELResponseMessage"/>
+              <variable name="Filename_NG" type="xsd:string"/>
+              <variable name="Filename_RG" type="xsd:string"/>
+              <variable name="Filename_TN" type="xsd:string"/>
+            </variables>
+            <faultHandlers>
+              <catch faultName="bpelx:bindingFault" faultVariable="FaultVar_1">
+                <sequence name="handling_write_file">
+                  <assign name="assign_write_data">
+                    <copy>
+                      <from expression="xpath20:current-dateTime()"/>
+                      <to variable="error_write_file_sendDataTrade_OutputVariable"
+                          part="payload"
+                          query="/ns2:wsReply/ns2:receiveDateTime"/>
+                    </copy>
+                    <copy>
+                      <from expression="'ERROR'"/>
+                      <to variable="error_write_file_sendDataTrade_OutputVariable"
+                          part="payload" query="/ns2:wsReply/ns2:status"/>
+                    </copy>
+                    <copy>
+                      <from expression="string(bpws:getVariableData('FaultVar_1','summary'))"/>
+                      <to variable="error_write_file_sendDataTrade_OutputVariable"
+                          part="payload" query="/ns2:wsReply/ns2:description"/>
+                    </copy>
+                  </assign>
+                  <reply name="error_write_file"
+                         variable="error_write_file_sendDataTrade_OutputVariable"
+                         partnerLink="PDC-DataTrade"
+                         portType="client:DataTradeBPEL"
+                         operation="sendDataTrade"/>
+                  <terminate name="terminate_write_file"/>
+                </sequence>
+              </catch>
+            </faultHandlers>
+            <sequence name="Sequence_DataTrade">
+              <switch name="NG">
+                <case condition="ora:countNodes('Data_Trade_In_NG','/ns5:DataTrade/ns5:body/ns5:trade') > 0">
+                  <bpelx:annotation>
+                    <bpelx:general>
+                      <bpelx:property name="userLabel">NG</bpelx:property>
+                    </bpelx:general>
+                  </bpelx:annotation>
+                  <sequence name="Sequence_NG">
+                    <assign name="filename_ng">
+                      <copy>
+                        <from expression="concat('IDXN',substring-before(bpws:getVariableData('FileName'),'.sxt'),'NG')"/>
+                        <to variable="Filename_NG"/>
+                      </copy>
+                      <copy>
+                        <from expression="concat(bpws:getVariableData('Filename_NG'),'.sxt')"/>
+                        <to variable="Filename_NG"/>
+                      </copy>
+                    </assign>
+                    <assign name="transform_out_ng">
+                      <bpelx:annotation>
+                        <bpelx:pattern>transformation</bpelx:pattern>
+                      </bpelx:annotation>
+                      <copy>
+                        <from expression="ora:processXSLT('xsl/transform_out_ng.xsl',bpws:getVariableData('Data_Trade_In_NG'))"/>
+                        <to variable="write_file_Write_InputVariable"
+                            part="body"/>
+                      </copy>
+                    </assign>
+                    <invoke name="write_file"
+                            inputVariable="write_file_Write_InputVariable"
+                            portType="ns3:Write_ptt"
+                            partnerLink="writeFileDataTrade" operation="Write">
+                      <bpelx:inputProperty name="jca.file.Directory"
+                                           variable="getDirNG_getLogicalDirectory_OutputVariable"
+                                           part="reply"
+                                           query="/ns22:getLogicalDirectoryReply/ns22:logicalDirectory/ns22:physicalPath"/>
+                      <bpelx:inputProperty name="jca.file.FileName"
+                                           variable="Filename_NG"/>
+                    </invoke>
+                  </sequence>
+                </case>
+                <otherwise/>
+              </switch>
+              <switch name="RG">
+                <case condition="ora:countNodes('Data_Trade_In_RG','/ns5:DataTrade/ns5:body/ns5:trade') > 0">
+                  <bpelx:annotation>
+                    <bpelx:general>
+                      <bpelx:property name="userLabel">RG</bpelx:property>
+                    </bpelx:general>
+                  </bpelx:annotation>
+                  <sequence name="Sequence_RG">
+                    <assign name="filename_rg">
+                      <copy>
+                        <from expression="concat('IDXN',substring-before(bpws:getVariableData('FileName'),'.sxt'),'RG')"/>
+                        <to variable="Filename_RG"/>
+                      </copy>
+                      <copy>
+                        <from expression="concat(bpws:getVariableData('Filename_RG'),'.sxt')"/>
+                        <to variable="Filename_RG"/>
+                      </copy>
+                    </assign>
+                    <assign name="transform_out_rg">
+                      <bpelx:annotation>
+                        <bpelx:pattern>transformation</bpelx:pattern>
+                      </bpelx:annotation>
+                      <copy>
+                        <from expression="ora:processXSLT('xsl/transform_out_rg.xsl',bpws:getVariableData('Data_Trade_In_RG'))"/>
+                        <to variable="write_file_rg_Write_InputVariable"
+                            part="body"/>
+                      </copy>
+                    </assign>
+                    <invoke name="write_file_rg"
+                            inputVariable="write_file_rg_Write_InputVariable"
+                            partnerLink="writeFileDataTrade"
+                            portType="ns3:Write_ptt" operation="Write">
+                      <bpelx:inputProperty name="jca.file.Directory"
+                                           variable="getDirRG_getLogicalDirectory_OutputVariable"
+                                           part="reply"
+                                           query="/ns22:getLogicalDirectoryReply/ns22:logicalDirectory/ns22:physicalPath"/>
+                      <bpelx:inputProperty name="jca.file.FileName"
+                                           variable="Filename_RG"/>
+                    </invoke>
+                  </sequence>
+                </case>
+                <otherwise/>
+              </switch>
+              <switch name="TN">
+                <case condition="ora:countNodes('Data_Trade_In_TN','/ns5:DataTrade/ns5:body/ns5:trade') > 0">
+                  <bpelx:annotation>
+                    <bpelx:general>
+                      <bpelx:property name="userLabel">TN</bpelx:property>
+                    </bpelx:general>
+                  </bpelx:annotation>
+                  <sequence name="Sequence_TN">
+                    <assign name="filename_tn">
+                      <copy>
+                        <from expression="concat('IDXN',substring-before(bpws:getVariableData('FileName'),'.sxt'),'TN')"/>
+                        <to variable="Filename_TN"/>
+                      </copy>
+                      <copy>
+                        <from expression="concat(bpws:getVariableData('Filename_TN'),'.sxt')"/>
+                        <to variable="Filename_TN"/>
+                      </copy>
+                    </assign>
+                    <assign name="transform_out_tn">
+                      <bpelx:annotation>
+                        <bpelx:pattern>transformation</bpelx:pattern>
+                      </bpelx:annotation>
+                      <copy>
+                        <from expression="ora:doXSLTransformForDoc('xsl/transform_out_tn.xsl', $Data_Trade_In_TN)"/>
+                        <to variable="write_file_tn_Write_InputVariable"
+                            part="body"/>
+                      </copy>
+                    </assign>
+                    <invoke name="write_file_tn"
+                            inputVariable="write_file_tn_Write_InputVariable"
+                            partnerLink="writeFileDataTrade"
+                            portType="ns3:Write_ptt" operation="Write">
+                      <bpelx:inputProperty name="jca.file.Directory"
+                                           variable="getDirTN_getLogicalDirectory_OutputVariable"
+                                           part="reply"
+                                           query="/ns22:getLogicalDirectoryReply/ns22:logicalDirectory/ns22:physicalPath"/>
+                      <bpelx:inputProperty name="jca.file.FileName"
+                                           variable="Filename_TN"/>
+                    </invoke>
+                  </sequence>
+                </case>
+                <otherwise/>
+              </switch>
+              <assign name="Assign_isDummy">
+                <copy>
+                  <from expression="'0'"/>
+                  <to variable="isDummy"/>
+                </copy>
+              </assign>
+            </sequence>
+          </scope>
+        </sequence>
+      </otherwise>
+    </switch>
+    <assign name="Assign_Sukses">
+      <copy>
+        <from expression="'SUCCESS'"/>
+        <to variable="outputVariable" part="payload"
+            query="/ns2:wsReply/ns2:status"/>
+      </copy>
+      <copy>
+        <from expression="xpath20:current-dateTime()"/>
+        <to variable="outputVariable" part="payload"
+            query="/ns2:wsReply/ns2:receiveDateTime"/>
+      </copy>
+    </assign>
+    <reply name="replyOutput" partnerLink="PDC-DataTrade" portType="client:DataTradeBPEL" operation="sendDataTrade" variable="outputVariable"/>
+  </sequence>
+</process>

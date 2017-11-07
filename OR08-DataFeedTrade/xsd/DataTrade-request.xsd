@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='windows-1252'?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.kpei.co.id/DataTradeRequest" targetNamespace="http://www.kpei.co.id/DataTradeRequest" elementFormDefault="qualified">
+   <xsd:include schemaLocation="MiddlewareHeader.xsd"/>
+   <xsd:include schemaLocation="ExpandableVariable.xsd"/>
+   <xsd:element name="DataTrade">
+      <xsd:annotation>
+         <xsd:documentation>
+        A sample element
+      </xsd:documentation>
+      </xsd:annotation>
+      <xsd:complexType>
+         <xsd:sequence>
+            <xsd:element name="header" type="middlewareHeader"/>
+            <xsd:element name="isDummy" type="xsd:string"/>
+            <xsd:element name="session" type="tSession" maxOccurs="1" minOccurs="1"/>
+            <xsd:element name="body">
+               <xsd:complexType>
+                  <xsd:sequence maxOccurs="unbounded">
+                     <xsd:element name="trade">
+                        <xsd:complexType>
+                           <xsd:sequence>
+                              <xsd:element name="tradeNumber" type="xsd:string"/>
+                              <xsd:element name="sellerBuyer">
+                                 <xsd:complexType>
+                                    <xsd:sequence>
+                                       <xsd:element name="sellerBroker" type="xsd:string"/>
+                                       <xsd:element name="stockCode" type="xsd:string"/>
+                                       <xsd:element name="boardCode" type="xsd:string"/>
+                                       <xsd:element name="tradeNumber" type="xsd:string"/>
+                                       <xsd:element name="tradeDate" type="xsd:date"/>
+                                       <xsd:element name="buyerBroker" type="xsd:string"/>
+                                    </xsd:sequence>
+                                 </xsd:complexType>
+                              </xsd:element>
+                              <xsd:element name="tradeDate" type="xsd:date"/>
+                              <xsd:element name="sessionTrade" type="xsd:string"/>
+                              <xsd:element name="boardCode" type="xsd:string"/>
+                              <xsd:element name="sellerBroker" type="xsd:string"/>
+                              <xsd:element name="sellerClient" type="xsd:string"/>
+                              <xsd:element name="sellerType" type="xsd:string"/>
+                              <xsd:element name="brokerCode" type="xsd:string"/>
+                              <xsd:element name="brokerClient" type="xsd:string"/>
+                              <xsd:element name="brokerType" type="xsd:string"/>
+                              <xsd:element name="stockCode" type="xsd:string"/>
+                              <xsd:element name="volume" type="xsd:string"/>
+                              <xsd:element name="price" type="xsd:string"/>
+                           </xsd:sequence>
+                        </xsd:complexType>
+                     </xsd:element>
+                  </xsd:sequence>
+               </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="ext" type="expandableVariable"/>
+         </xsd:sequence>
+      </xsd:complexType>
+   </xsd:element>
+   <xsd:simpleType name="tSession">
+      <xsd:restriction base="xsd:string">
+         <xsd:minLength value="1"/>
+      </xsd:restriction>
+   </xsd:simpleType>
+</xsd:schema>

@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<wsdl:definitions name="DataTradeBPEL" targetNamespace="http://xmlns.oracle.com/ARIS_KPEI_PROJECT_jws/OR08_DataFeedTrade/DataTradeBPEL" xmlns:ns2="http://kpei.co.id/MDwsReply.xsd" xmlns:ns1="http://www.kpei.co.id/DataTradeRequest" xmlns:ns4="http://www.kpei.co.id/writeFileDataTrade" xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:ns3="http://schemas.oracle.com/bpel/extension" xmlns:client="http://xmlns.oracle.com/ARIS_KPEI_PROJECT_jws/OR08_DataFeedTrade/DataTradeBPEL" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+   <plnk:partnerLinkType name="DataTradeBPEL">
+      <plnk:role name="DataTradeBPELProvider">
+         <plnk:portType name="client:DataTradeBPEL"/>
+      </plnk:role>
+   </plnk:partnerLinkType>
+   <wsdl:import namespace="http://schemas.oracle.com/bpel/extension" location="RuntimeFault.wsdl"/>
+   <wsdl:types>
+      <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ns2="http://kpei.co.id/MDwsReply.xsd" xmlns:ns1="http://www.kpei.co.id/DataTradeRequest" xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:ns4="http://www.kpei.co.id/writeFileDataTrade" xmlns:ns3="http://schemas.oracle.com/bpel/extension" xmlns:client="http://xmlns.oracle.com/ARIS_KPEI_PROJECT_jws/OR08_DataFeedTrade/DataTradeBPEL" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+         <import namespace="http://www.kpei.co.id/DataTradeRequest" schemaLocation="xsd/DataTrade-request.xsd"/>
+      </schema>
+      <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ns2="http://kpei.co.id/MDwsReply.xsd" xmlns:ns1="http://www.kpei.co.id/DataTradeRequest" xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:ns4="http://www.kpei.co.id/writeFileDataTrade" xmlns:ns3="http://schemas.oracle.com/bpel/extension" xmlns:client="http://xmlns.oracle.com/ARIS_KPEI_PROJECT_jws/OR08_DataFeedTrade/DataTradeBPEL" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+         <import namespace="http://kpei.co.id/MDwsReply.xsd" schemaLocation="xsd/MDwsReply.xsd"/>
+      </schema>
+      <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns2="http://kpei.co.id/MDwsReply.xsd" xmlns:ns1="http://www.kpei.co.id/DataTradeRequest" xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:ns4="http://www.kpei.co.id/writeFileDataTrade" xmlns:ns3="http://schemas.oracle.com/bpel/extension" xmlns:client="http://xmlns.oracle.com/ARIS_KPEI_PROJECT_jws/OR08_DataFeedTrade/DataTradeBPEL" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+         <xsd:import namespace="http://www.kpei.co.id/writeFileDataTrade" schemaLocation="xsd/DataTradeOutput.xsd"/>
+      </xsd:schema>
+   </wsdl:types>
+   <wsdl:message name="DataTradeBPELRequestMessage">
+      <wsdl:part name="payload" element="ns1:DataTrade"/>
+   </wsdl:message>
+   <wsdl:message name="DataTradeBPELResponseMessage">
+      <wsdl:part name="payload" element="ns2:wsReply"/>
+   </wsdl:message>
+   <wsdl:portType name="DataTradeBPEL">
+      <wsdl:operation name="sendDataTrade">
+         <wsdl:input message="client:DataTradeBPELRequestMessage"/>
+         <wsdl:output message="client:DataTradeBPELResponseMessage"/>
+      </wsdl:operation>
+   </wsdl:portType>
+</wsdl:definitions>

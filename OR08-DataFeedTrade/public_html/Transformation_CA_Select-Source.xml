@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dat="http://www.kpei.co.id/DataFeedTradeRequest">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <dat:NettedTrade>
+         <dat:header id="NetTrade-20091120">
+            <dat:asAt>2009-11-20T17:36:12.123</dat:asAt>
+            <dat:source>DATAFEED</dat:source>
+         </dat:header>
+         <dat:body>
+            <dat:content>
+               <dat:deal>
+                  <dat:dealHeader>
+                     <dat:dealId>NetTrade_kktr1001_CPIN</dat:dealId>
+                     <dat:dealDate>2009-11-20</dat:dealDate>
+                  </dat:dealHeader>
+                  <dat:trade>
+                     <dat:tradeHeader>
+                        <dat:tradeId>NetTrade_kktr1001_CPIN</dat:tradeId>
+                        <dat:tradeDate>2009-11-20</dat:tradeDate>
+                        <dat:tradeType/>
+                        <dat:counterparty>kktr1001</dat:counterparty>
+                        <dat:buySell>BUY</dat:buySell>
+                     </dat:tradeHeader>
+                     <dat:product>
+                        <dat:equity>
+                           <dat:instrumentId>CPIN</dat:instrumentId>
+                           <dat:numberShares>57000</dat:numberShares>
+                           <dat:currency>IDR</dat:currency>
+                           <dat:paymentAmount>
+                              <dat:paymentAmount>
+                                 <dat:currency>IDR</dat:currency>
+                                 <dat:amount>112200000</dat:amount>
+                              </dat:paymentAmount>
+                              <dat:adjustedPaymentDate>2009-11-25</dat:adjustedPaymentDate>
+                           </dat:paymentAmount>
+                        </dat:equity>
+                     </dat:product>
+                     <dat:extensions>
+                        <dat:extension>
+                           <dat:name>Account</dat:name>
+                           <dat:value>Acc1kktr1001</dat:value>
+                        </dat:extension>
+                        <dat:extension>
+                           <dat:name>Market</dat:name>
+                           <dat:value>Equity</dat:value>
+                        </dat:extension>
+                     </dat:extensions>
+                  </dat:trade>
+               </dat:deal>
+            </dat:content>
+         </dat:body>
+         <dat:ext>
+            <dat:value id="?">?</dat:value>
+         </dat:ext>
+      </dat:NettedTrade>
+   </soapenv:Body>
+</soapenv:Envelope>

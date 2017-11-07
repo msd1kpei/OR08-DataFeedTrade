@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<componentType xmlns="http://xmlns.oracle.com/sca/1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ui="http://xmlns.oracle.com/soa/designer/">
+   <service name="PDC-DataTrade" ui:wsdlLocation="DataTradeBPEL.wsdl">
+      <interface.wsdl interface="http://xmlns.oracle.com/ARIS_KPEI_PROJECT_jws/OR08_DataFeedTrade/DataTradeBPEL#wsdl.interface(DataTradeBPEL)"/>
+   </service>
+   <reference name="writeFileDataTrade" ui:wsdlLocation="writeFileDataTrade.wsdl">
+      <interface.wsdl interface="http://xmlns.oracle.com/pcbpel/adapter/file/ARIS-KPEI-PROJECT/OR08-DataFeedTrade/writeFileDataTrade#wsdl.interface(Write_ptt)"/>
+   </reference>
+   <reference name="writeFileDataTradeDummy" ui:wsdlLocation="writeFileDataTradeDummy.wsdl">
+      <interface.wsdl interface="http://xmlns.oracle.com/pcbpel/adapter/file/ARIS-KPEI-PROJECT/OR08-DataFeedTrade/writeFileDataTradeDummy#wsdl.interface(Write_ptt)"/>
+   </reference>
+   <reference name="xmlUtilityRef" ui:wsdlLocation="GE03-XMLUtilityRef1.wsdl">
+      <interface.wsdl interface="http://oracle.com/sca/soapservice/kpei/GE03-XMLUtility/GE03_XMLUtility#wsdl.interface(GE03-XMLUtility)"/>
+   </reference>
+</componentType>

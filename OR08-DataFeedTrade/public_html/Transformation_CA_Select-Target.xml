@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<inp1:NettedTrade xmlns:inp1="http://www.kpei.co.id/DataFeedTradeRequest">
+   <inp1:body>
+      <inp1:content/>
+   </inp1:body>
+</inp1:NettedTrade>

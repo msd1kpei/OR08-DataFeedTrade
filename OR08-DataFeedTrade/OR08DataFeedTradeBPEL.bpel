@@ -1,0 +1,538 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Wed Mar 10 15:17:34 ICT 2010
+  Author:  Administrator
+  Purpose: Empty BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="OR08DataFeedTradeBPEL"
+               targetNamespace="http://xmlns.oracle.com/KPEIMID_jws/OR08_DataFeedTrade/OR08DataFeedTradeBPEL"
+               xmlns="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+                xmlns:client="http://xmlns.oracle.com/KPEIMID_jws/OR08_DataFeedTrade/OR08DataFeedTradeBPEL"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/"
+         xmlns:ns1="http://oracle.com/sca/soapservice/KPEIMID/OR08-DataFeedTrade/OR08_DataFeedTrade"
+         xmlns:ns2="http://oracle.com/sca/soapservice/KPEI-MIDDLEWARE/Ge01-messageMonitor/messageMonitorService"
+         xmlns:ns3="http://oracle.com/sca/soapservice/kpei/GE03-XMLUtility/GE03_XMLUtility"
+         xmlns:ns4="http://www.kpei.co.id/GE02-FileUtility"
+         xmlns:ns5="http://xmlns.oracle.com/pcbpel/adapter/file/KPEIMID/OR08-DataFeedTrade/writeFA"
+         xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:xpath20="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.Xpath20"
+         xmlns:oraext="http://www.oracle.com/XSL/Transform/java/oracle.tip.pc.services.functions.ExtFunc"
+         xmlns:dvm="http://www.oracle.com/XSL/Transform/java/oracle.tip.dvm.LookupValue"
+         xmlns:xdk="http://schemas.oracle.com/bpel/extension/xpath/function/xdk"
+         xmlns:xref="http://www.oracle.com/XSL/Transform/java/oracle.tip.xref.xpath.XRefXPathFunctions"
+         xmlns:ldap="http://schemas.oracle.com/xpath/extension/ldap"
+         xmlns:ns6="http://www.kpei.co.id/kpei/messageMonitor"
+         xmlns:ns7="http://www.kpei.co.id/DataFeedTradeRequest"
+         xmlns:ns10="http://www.kpei.co.id/GE03-XMLUtility/types"
+         xmlns:ns11="http://www.kpei.co.id/razor/Equity"
+         xmlns:ns12="http://www.kpei.co.id/GE02-FileUtility/types"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:ns13="http://kpei.co.id/MDwsReply.xsd"
+         xmlns:ns8="http://xmlns.oracle.com/pcbpel/adapter/db/ARIS-KPEI-PROJECT/OR08-DataFeedTrade/REF_CA_Select"
+         xmlns:ns9="http://xmlns.oracle.com/pcbpel/adapter/db/ARIS-KPEI-PROJECT/OR08-DataFeedTrade/REF_CA_insert"
+         xmlns:ns14="http://xmlns.oracle.com/pcbpel/adapter/db/ARIS-KPEI-PROJECT/OR08-DataFeedTrade/REF_CA_delete"
+         xmlns:bpel2="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:bpm="http://xmlns.oracle.com/bpmn20/extensions"
+         xmlns:socket="http://www.oracle.com/XSL/Transform/java/oracle.tip.adapter.socket.ProtocolTranslator"
+         xmlns:mhdr="http://www.oracle.com/XSL/Transform/java/oracle.tip.mediator.service.common.functions.MediatorExtnFunction"
+         xmlns:hwf="http://xmlns.oracle.com/bpel/workflow/xpath"
+         xmlns:med="http://schemas.oracle.com/mediator/xpath"
+         xmlns:ids="http://xmlns.oracle.com/bpel/services/IdentityService/xpath"
+         xmlns:ns15="http://xmlns.oracle.com/ARIS_KPEI_PROJECT_jws/OR08_DataFeedTrade/MWII02STPNettingBalances"
+         xmlns:ns16="http://xmlns.oracle.com/ARIS_KPEI_PROJECT_jws/OR08_DataFeedTrade/MWII02STPNettingBalancesBPEL"
+         xmlns:ns17="http://oracle.com/sca/soapservice/ARIS-KPEI-PROJECT/CheckDesignatedStock/dataFeedTradeCheckService"
+         xmlns:ns18="http://oracle.com/sca/soapservice/mysqlTestInsert/CheckDesignatedStockServ/checkDesignatedStockService"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:ns19="http://www.kpei.co.id/CheckDesignatedStock"
+         xmlns:ns20="http://xmlns.oracle.com/pcbpel/adapter/file/ARIS-KPEI-PROJECT/OR08-DataFeedTrade/MKBDRealTimeOutbound"
+         xmlns:ns21="http://xmlns.oracle.com/pcbpel/adapter/ftp/ARIS-KPEI-PROJECT/OR08-DataFeedTrade/ftpMKBDRealTime">
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <partnerLinks>
+    <partnerLink myRole="sendNettedTrade_ptt" name="OR08-DataFeedTrade"
+                 partnerLinkType="ns1:OR08-DataFeedTrade"/>
+    <partnerLink name="xmlUtilityRef" partnerRole="GE03-XMLUtility"
+                 partnerLinkType="ns3:xmlUtilityRef"/>
+    <partnerLink name="fileUtilityRef" partnerRole="GE02-FileUtility"
+                 partnerLinkType="ns4:fileUtilityRef"/>
+    <partnerLink name="writeFA" partnerRole="Write_role"
+                 partnerLinkType="ns5:Write_plt"/>
+    <partnerLink name="checkDesignatedStockRef"
+                 partnerLinkType="ns18:checkDesignatedStockRef"
+                 partnerRole="execute_ptt"/>
+    <partnerLink name="ftpMKBDRealTime" partnerLinkType="ns21:Put_plt"
+                 partnerRole="Put_role"/>
+  </partnerLinks>
+  <variables>
+    <variable name="inputVariable" messageType="ns1:requestMessage"/>
+    <variable name="outputVariable" messageType="ns1:replyMessage"/>
+    <variable name="xmlDataRequest" messageType="ns3:getXMLDataRequestMessage"/>
+    <variable name="xmlData" messageType="ns3:getXMLDataReplyMessage"/>
+    <variable name="messageDigestRequest"
+              messageType="ns3:getMiddlewareConfigRequestMessage"/>
+    <variable name="messageDigest"
+              messageType="ns3:getMiddlewareConfigReplyMessage"/>
+    <variable name="localPathRequest"
+              messageType="ns3:getLogicalDirectoryRequestMessage"/>
+    <variable name="localPath"
+              messageType="ns3:getLogicalDirectoryReplyMessage"/>
+    <variable name="externalPathRequest"
+              messageType="ns3:getLogicalDirectoryRequestMessage"/>
+    <variable name="externalPath"
+              messageType="ns3:getLogicalDirectoryReplyMessage"/>
+    <variable name="drcPathRequest"
+              messageType="ns3:getLogicalDirectoryRequestMessage"/>
+    <variable name="drcPath" messageType="ns3:getLogicalDirectoryReplyMessage"/>
+    <variable name="filePayload" messageType="ns5:Write_msg"/>
+    <variable name="copyFileRequest" messageType="ns4:copyFileRequestMessage"/>
+    <variable name="copyFileReply" messageType="ns4:copyFileReplyMessage"/>
+    <variable name="invalidVar" messageType="bpelx:RuntimeFaultMessage"/>
+    <variable name="validation_error_OR08-sendNettedTrade_OutputVariable"
+              messageType="ns1:replyMessage"/>
+    <variable name="Invoke_GetToRazorWIPath_getLogicalDirectory_InputVariable"
+              messageType="ns3:getLogicalDirectoryRequestMessage"/>
+    <variable name="Invoke_GetToRazorWIPath_getLogicalDirectory_OutputVariable"
+              messageType="ns3:getLogicalDirectoryReplyMessage"/>
+    <variable name="invokeCheckDesignatedStock_designatedStock_execute_InputVariable"
+              messageType="ns18:requestMessage"/>
+    <variable name="invokeCheckDesignatedStock_designatedStock_execute_OutputVariable"
+              messageType="ns18:replyMessage"/>
+    <variable name="extExpandVar" element="ns7:extExpand"/>
+    <variable name="mkbdrealtime" messageType="ns1:requestMessage"/>
+    <variable name="kpeiInboundVar" element="ns11:kpeiInbound"/>
+  </variables>
+  <faultHandlers>
+    <catch faultName="bpelx:invalidVariables" faultVariable="invalidVar">
+      <sequence>
+        <assign name="Assign_1">
+          <copy>
+            <from expression="xpath20:current-dateTime()"/>
+            <to variable="validation_error_OR08-sendNettedTrade_OutputVariable"
+                part="reply" query="/ns13:wsReply/ns13:receiveDateTime"/>
+          </copy>
+          <copy>
+            <from expression="'ERROR'"/>
+            <to variable="validation_error_OR08-sendNettedTrade_OutputVariable"
+                part="reply" query="/ns13:wsReply/ns13:status"/>
+          </copy>
+          <copy>
+            <from expression="string(bpws:getVariableData('invalidVar','summary'))"/>
+            <to variable="validation_error_OR08-sendNettedTrade_OutputVariable"
+                part="reply" query="/ns13:wsReply/ns13:description"/>
+          </copy>
+        </assign>
+        <reply name="validation_error"
+               variable="validation_error_OR08-sendNettedTrade_OutputVariable"
+               partnerLink="OR08-DataFeedTrade"
+               portType="ns1:sendNettedTrade_ptt"
+               operation="OR08-sendNettedTrade"/>
+      </sequence>
+    </catch>
+    <catchAll>
+      <sequence name="seqMainFault">
+        <assign name="assignFaultReply">
+          <copy>
+            <from expression="'ERROR'"/>
+            <to variable="outputVariable" part="reply"
+                query="/ns13:wsReply/ns13:status"/>
+          </copy>
+          <copy>
+            <from expression="concat('[MW001] Error pada OR08DataFeedTradeBPEL, InstanceId=',string(ora:getInstanceId()))"/>
+            <to variable="outputVariable" part="reply"
+                query="/ns13:wsReply/ns13:description"/>
+          </copy>
+          <copy>
+            <from expression="xpath20:current-dateTime()"/>
+            <to variable="outputVariable" part="reply"
+                query="/ns13:wsReply/ns13:receiveDateTime"/>
+          </copy>
+        </assign>
+        <reply name="replyFault" variable="outputVariable"
+               partnerLink="OR08-DataFeedTrade"
+               portType="ns1:sendNettedTrade_ptt"
+               operation="OR08-sendNettedTrade"/>
+      </sequence>
+    </catchAll>
+  </faultHandlers>
+  <sequence name="main">
+    <receive name="receiveInput" createInstance="yes" variable="inputVariable"
+             partnerLink="OR08-DataFeedTrade"
+             portType="ns1:sendNettedTrade_ptt"
+             operation="OR08-sendNettedTrade"/>
+    <bpelx:validate name="input_validation" variables="inputVariable"/>
+    <sequence name="CheckDesignatedStock">
+      <assign name="transformInputCheckDesignatedTransform">
+        <bpelx:annotation>
+          <bpelx:pattern>transformation</bpelx:pattern>
+        </bpelx:annotation>
+        <copy>
+          <from expression="ora:doXSLTransformForDoc('xsl/t_inputCheckDesignatedStock1.xsl', $inputVariable.request)"/>
+          <to variable="invokeCheckDesignatedStock_designatedStock_execute_InputVariable"
+              part="input"/>
+        </copy>
+      </assign>
+      <invoke name="invokeCheckDesignatedStock" bpelx:invokeAsDetail="no"
+              inputVariable="invokeCheckDesignatedStock_designatedStock_execute_InputVariable"
+              outputVariable="invokeCheckDesignatedStock_designatedStock_execute_OutputVariable"
+              partnerLink="checkDesignatedStockRef"
+              portType="ns18:execute_ptt" operation="designatedStock_execute"/>
+      <assign name="transformInput">
+        <bpelx:annotation>
+          <bpelx:pattern>transformation</bpelx:pattern>
+        </bpelx:annotation>
+        <copy>
+          <from expression="ora:doXSLTransformForDoc('xsl/t_input1.xsl', $invokeCheckDesignatedStock_designatedStock_execute_OutputVariable.out)"/>
+          <to variable="inputVariable" part="request"/>
+        </copy>
+      </assign>
+    </sequence>
+    <sequence name="seqConfigure">
+      <assign name="assignInputs">
+        <copy>
+          <from expression="'OR08-DataFeedTrade'"/>
+          <to variable="xmlDataRequest" part="request"
+              query="/ns10:getXMLDataRequest/ns10:schemaName"/>
+        </copy>
+        <copy>
+          <from expression="'MESSAGE_DIGEST'"/>
+          <to variable="messageDigestRequest" part="request"
+              query="/ns10:getMiddlewareConfigRequest/ns10:MiddlewareParam"/>
+        </copy>
+        <copy>
+          <from expression="'OR08-DataFeedTrade-local'"/>
+          <to variable="localPathRequest" part="request"
+              query="/ns10:getLogicalDirectoryRequest/ns10:logicalDirectoryName"/>
+        </copy>
+        <copy>
+          <from expression="'OR08-DataFeedTrade-ext'"/>
+          <to variable="externalPathRequest" part="request"
+              query="/ns10:getLogicalDirectoryRequest/ns10:logicalDirectoryName"/>
+        </copy>
+        <copy>
+          <from expression="'OR08-DataFeedTrade-drc'"/>
+          <to variable="drcPathRequest" part="request"
+              query="/ns10:getLogicalDirectoryRequest/ns10:logicalDirectoryName"/>
+        </copy>
+      </assign>
+      <invoke name="invokeGetXMLData" inputVariable="xmlDataRequest"
+              outputVariable="xmlData" partnerLink="xmlUtilityRef"
+              portType="ns3:GE03-XMLUtility" operation="getXMLData"/>
+      <invoke name="invokeGetLocalDirectory" inputVariable="localPathRequest"
+              outputVariable="localPath" partnerLink="xmlUtilityRef"
+              portType="ns3:GE03-XMLUtility" operation="getLogicalDirectory"/>
+      <invoke name="invokeGetExternalDirectory"
+              inputVariable="externalPathRequest" outputVariable="externalPath"
+              partnerLink="xmlUtilityRef" portType="ns3:GE03-XMLUtility"
+              operation="getLogicalDirectory"/>
+      <invoke name="invokeGetMessageDigest" inputVariable="messageDigestRequest"
+              outputVariable="messageDigest" partnerLink="xmlUtilityRef"
+              portType="ns3:GE03-XMLUtility" operation="getMiddlewareConfig"/>
+    </sequence>
+    <sequence name="seq_NettedTradeProcessing">
+      <assign name="t_NettedTradeProcessing">
+        <bpelx:annotation>
+          <bpelx:pattern>transformation</bpelx:pattern>
+        </bpelx:annotation>
+        <copy>
+          <from expression="ora:doXSLTransformForDoc('xsl/t_NettedTradeProcessing.xsl', $xmlData.reply, 'inputVariable.request', $inputVariable.request)"/>
+          <to variable="kpeiInboundVar"/>
+        </copy>
+      </assign>
+      <assign name="a_header_id">
+        <copy>
+          <from expression='concat(ora:getCurrentDateTime("yyyyMMddHHmmssSSS"),"_",ora:getCompositeInstanceId(),"_trade")'/>
+          <to variable="kpeiInboundVar"
+              query="/ns11:kpeiInbound/ns11:header/@id"/>
+        </copy>
+      </assign>
+    </sequence>
+    <sequence name="seq_ext_MKBDRealTime">
+      <assign name="a_ext_to_extExpandVar">
+        <copy>
+          <from variable="inputVariable" part="request"
+                query="/ns7:NettedTrade/ns7:ext"/>
+          <to variable="extExpandVar" query="/ns7:extExpand"/>
+        </copy>
+      </assign>
+      <assign name="t_extExpandVar">
+        <bpelx:annotation>
+          <bpelx:pattern>transformation</bpelx:pattern>
+        </bpelx:annotation>
+        <copy>
+          <from expression="ora:doXSLTransformForDoc('xsl/t_extExpandVar.xsl', $extExpandVar)"/>
+          <to variable="extExpandVar"/>
+        </copy>
+      </assign>
+      <switch name="if_MKBDRealTime">
+        <case condition="bpws:getVariableData('extExpandVar','/ns7:extExpand/ns7:value/@id') = 'MKBDRealTime'">
+          <sequence name="seq_MKBDRealTime">
+            <scope name="Scope_MKBDRealTime" variableAccessSerializable="no">
+              <bpelx:annotation>
+                <bpelx:general>
+                  <bpelx:property name="userLabel">Scope_MKBDRealTime</bpelx:property>
+                </bpelx:general>
+              </bpelx:annotation>
+              <variables>
+                <variable name="fname" type="xsd:string"/>
+                <variable name="dirname" type="xsd:string"/>
+                <variable name="sendToFTP_Put_InputVariable"
+                          messageType="ns21:Put_msg"/>
+              </variables>
+              <faultHandlers>
+                <catchAll>
+                  <sequence name="Sequence1">
+                    <assign name="a_error">
+                      <copy>
+                        <from expression="xpath20:current-dateTime()"/>
+                        <to variable="outputVariable" part="reply"
+                            query="/ns13:wsReply/ns13:receiveDateTime"/>
+                      </copy>
+                      <copy>
+                        <from expression="'ERROR'"/>
+                        <to variable="outputVariable" part="reply"
+                            query="/ns13:wsReply/ns13:status"/>
+                      </copy>
+                      <copy>
+                        <from expression="'MKBD RealTime Scope.'"/>
+                        <to variable="outputVariable" part="reply"
+                            query="/ns13:wsReply/ns13:description"/>
+                      </copy>
+                    </assign>
+                    <reply name="reply_error" variable="outputVariable"
+                           partnerLink="OR08-DataFeedTrade"
+                           portType="ns1:sendNettedTrade_ptt"
+                           operation="OR08-sendNettedTrade"/>
+                    <terminate name="Terminate1"/>
+                  </sequence>
+                </catchAll>
+              </faultHandlers>
+              <sequence name="seq_MKBDRealTime">
+                <assign name="a_fname">
+                  <copy>
+                    <from expression="concat(bpws:getVariableData('kpeiInboundVar','/ns11:kpeiInbound/ns11:header/@id'),'.xml')"/>
+                    <to variable="fname"/>
+                  </copy>
+                </assign>
+                <assign name="a_dirname">
+                  <copy>
+                    <from expression="'/bursa'"/>
+                    <to variable="dirname"/>
+                  </copy>
+                </assign>
+                <assign name="t_sendToOutbound">
+                  <bpelx:annotation>
+                    <bpelx:pattern>transformation</bpelx:pattern>
+                  </bpelx:annotation>
+                  <copy>
+                    <from expression="ora:doXSLTransformForDoc('xsl/t_sendToOutbound.xsl', $kpeiInboundVar)"/>
+                    <to variable="sendToFTP_Put_InputVariable" part="body"/>
+                  </copy>
+                </assign>
+                <invoke name="sendToFTP"
+                        inputVariable="sendToFTP_Put_InputVariable"
+                        partnerLink="ftpMKBDRealTime" portType="ns21:Put_ptt"
+                        operation="Put" bpelx:invokeAsDetail="no">
+                  <bpelx:inputProperty name="jca.ftp.FileName"
+                                       variable="fname"/>
+                  <bpelx:inputProperty name="jca.ftp.Directory"
+                                       variable="dirname"/>
+                </invoke>
+              </sequence>
+            </scope>
+          </sequence>
+        </case>
+        <otherwise>
+          <sequence name="seq_otherwise">
+            <sequence name="seqProcess">
+              <assign name="t_sendToOutboundRAZOR">
+                <bpelx:annotation>
+                  <bpelx:pattern>transformation</bpelx:pattern>
+                </bpelx:annotation>
+                <copy>
+                  <from expression="ora:doXSLTransformForDoc('xsl/t_sendToOutboundRAZOR.xsl', $kpeiInboundVar)"/>
+                  <to variable="filePayload" part="body"/>
+                </copy>
+              </assign>
+              <assign name="assignInputs">
+                <copy>
+                  <from variable="localPath" part="reply"
+                        query="/ns10:getLogicalDirectoryReply/ns10:logicalDirectory/ns10:physicalPath"/>
+                  <to variable="copyFileRequest" part="request"
+                      query="/ns12:copyFileRequest/ns12:sourceDirectory"/>
+                </copy>
+                <copy>
+                  <from variable="externalPath" part="reply"
+                        query="/ns10:getLogicalDirectoryReply/ns10:logicalDirectory/ns10:physicalPath"/>
+                  <to variable="copyFileRequest" part="request"
+                      query="/ns12:copyFileRequest/ns12:targetDirectory"/>
+                </copy>
+                <copy>
+                  <from expression="concat(bpws:getVariableData('kpeiInboundVar','/ns11:kpeiInbound/ns11:header/@id'),'.xml')"/>
+                  <to variable="copyFileRequest" part="request"
+                      query="/ns12:copyFileRequest/ns12:fileName"/>
+                </copy>
+                <copy>
+                  <from expression="oraext:compare-ignore-case(string(bpws:getVariableData('messageDigest','reply','/ns10:getMiddlewareConfigReply/ns10:Value')),'true') = 0"/>
+                  <to variable="copyFileRequest" part="request"
+                      query="/ns12:copyFileRequest/ns12:messageDigest"/>
+                </copy>
+              </assign>
+              <invoke name="invokeWriteLocal" inputVariable="filePayload"
+                      partnerLink="writeFA" portType="ns5:Write_ptt"
+                      operation="Write" bpelx:invokeAsDetail="no">
+                <bpelx:inputProperty name="jca.file.Directory"
+                                     variable="copyFileRequest" part="request"
+                                     query="/ns12:copyFileRequest/ns12:sourceDirectory"/>
+                <bpelx:inputProperty name="jca.file.FileName"
+                                     variable="copyFileRequest" part="request"
+                                     query="/ns12:copyFileRequest/ns12:fileName"/>
+              </invoke>
+            </sequence>
+            <switch name="if_not_MI">
+              <case condition="bpws:getVariableData('inputVariable','request','/ns7:NettedTrade/ns7:header/ns7:source') != 'MI'">
+                <sequence name="seqDeliver">
+                  <invoke name="invokeCopyToExternal"
+                          inputVariable="copyFileRequest"
+                          outputVariable="copyFileReply"
+                          partnerLink="fileUtilityRef"
+                          portType="ns4:GE02-FileUtility" operation="copyFile"/>
+                  <switch name="switchCopyToExternal">
+                    <case condition="bpws:getVariableData('copyFileReply','reply','/ns12:copyFileReply/ns12:status') = 'SUCCESS'">
+                      <bpelx:annotation>
+                        <bpelx:pattern>copyToExternalSuccess</bpelx:pattern>
+                      </bpelx:annotation>
+                    </case>
+                    <otherwise>
+                      <throw name="throwCopyToExternalFault"
+                             faultName="bpws:forcedTermination"/>
+                    </otherwise>
+                  </switch>
+                  <scope name="scopeCopyToDRC">
+                    <faultHandlers>
+                      <catchAll>
+                        <sequence name="seqCopyToDRCFault">
+                          <empty name="emptyCopyToDRCFault"/>
+                        </sequence>
+                      </catchAll>
+                    </faultHandlers>
+                    <sequence name="seqCopyToDRC">
+                      <invoke name="invokeGetDRCDirectory"
+                              inputVariable="drcPathRequest"
+                              outputVariable="drcPath"
+                              partnerLink="xmlUtilityRef"
+                              portType="ns3:GE03-XMLUtility"
+                              operation="getLogicalDirectory"/>
+                      <assign name="assignDRCPath">
+                        <copy>
+                          <from variable="drcPath" part="reply"
+                                query="/ns10:getLogicalDirectoryReply/ns10:logicalDirectory/ns10:physicalPath"/>
+                          <to variable="copyFileRequest" part="request"
+                              query="/ns12:copyFileRequest/ns12:targetDirectory"/>
+                        </copy>
+                      </assign>
+                      <invoke name="invokeCopyToDRC"
+                              inputVariable="copyFileRequest"
+                              partnerLink="fileUtilityRef"
+                              portType="ns4:GE02-FileUtility"
+                              operation="copyFile"
+                              outputVariable="copyFileReply"/>
+                      <switch name="switchCopyToDRC">
+                        <case condition="bpws:getVariableData('copyFileReply','reply','/ns12:copyFileReply/ns12:status') = 'SUCCESS'">
+                          <bpelx:annotation>
+                            <bpelx:pattern>copyToDRCSuccess</bpelx:pattern>
+                          </bpelx:annotation>
+                        </case>
+                        <otherwise>
+                          <throw name="throwCopyToDRCFault"
+                                 faultName="bpws:forcedTermination"/>
+                        </otherwise>
+                      </switch>
+                    </sequence>
+                  </scope>
+                </sequence>
+              </case>
+              <otherwise/>
+            </switch>
+            <scope name="Scope_CopyToRazorWI">
+              <bpelx:annotation>
+                <bpelx:general>
+                  <bpelx:property name="userLabel">Scope_CopyToRazorWI</bpelx:property>
+                </bpelx:general>
+              </bpelx:annotation>
+              <faultHandlers>
+                <catchAll>
+                  <sequence>
+                    <empty name="Empty_CopyToRazorWI"/>
+                  </sequence>
+                </catchAll>
+              </faultHandlers>
+              <sequence name="Sequence_CopyToRazorWI">
+                <assign name="Assign_Invoke_GetToRazorWIPath">
+                  <copy>
+                    <from expression='"OR08-DataFeedTrade-wi"'/>
+                    <to variable="Invoke_GetToRazorWIPath_getLogicalDirectory_InputVariable"
+                        part="request"
+                        query="/ns10:getLogicalDirectoryRequest/ns10:logicalDirectoryName"/>
+                  </copy>
+                </assign>
+                <invoke name="Invoke_GetToRazorWIPath"
+                        inputVariable="Invoke_GetToRazorWIPath_getLogicalDirectory_InputVariable"
+                        outputVariable="Invoke_GetToRazorWIPath_getLogicalDirectory_OutputVariable"
+                        partnerLink="xmlUtilityRef"
+                        portType="ns3:GE03-XMLUtility"
+                        operation="getLogicalDirectory"/>
+                <assign name="Assign_CopyToRazorWI">
+                  <copy>
+                    <from variable="Invoke_GetToRazorWIPath_getLogicalDirectory_OutputVariable"
+                          part="reply"
+                          query="/ns10:getLogicalDirectoryReply/ns10:logicalDirectory/ns10:physicalPath"/>
+                    <to variable="copyFileRequest" part="request"
+                        query="/ns12:copyFileRequest/ns12:targetDirectory"/>
+                  </copy>
+                </assign>
+                <invoke name="Invoke_CopyToRazorWI"
+                        inputVariable="copyFileRequest"
+                        outputVariable="copyFileReply"
+                        partnerLink="fileUtilityRef"
+                        portType="ns4:GE02-FileUtility" operation="copyFile"/>
+                <switch name="Switch_2">
+                  <case condition="bpws:getVariableData('copyFileReply','reply','/ns12:copyFileReply/ns12:status') = 'SUCCESS'"/>
+                  <otherwise>
+                    <throw name="throwCopyToRazorWIFault"
+                           faultName="bpws:forcedTermination"/>
+                  </otherwise>
+                </switch>
+              </sequence>
+            </scope>
+          </sequence>
+        </otherwise>
+      </switch>
+    </sequence>
+    <assign name="assignReply">
+      <copy>
+        <from expression="'SUCCESS'"/>
+        <to variable="outputVariable" part="reply"
+            query="/ns13:wsReply/ns13:status"/>
+      </copy>
+      <copy>
+        <from expression="xpath20:current-dateTime()"/>
+        <to variable="outputVariable" part="reply"
+            query="/ns13:wsReply/ns13:receiveDateTime"/>
+      </copy>
+    </assign>
+    <reply name="replyOutput" variable="outputVariable"
+           partnerLink="OR08-DataFeedTrade" portType="ns1:sendNettedTrade_ptt"
+           operation="OR08-sendNettedTrade"/>
+  </sequence>
+</process>

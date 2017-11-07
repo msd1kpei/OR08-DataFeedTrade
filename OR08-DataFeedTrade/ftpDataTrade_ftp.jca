@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<adapter-config name="ftpDataTrade" adapter="Ftp Adapter" wsdlLocation="ftpDataTrade.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
+   <connection-factory location="eis/Ftp/FtpAdapterPDC" adapterRef=""/>
+   <endpoint-interaction portType="Put_ptt" operation="Put">
+      <interaction-spec className="oracle.tip.adapter.ftp.outbound.FTPInteractionSpec">
+         <property name="FileType" value="ascii"/>
+         <property name="PhysicalDirectory" value="dummy"/>
+         <property name="FileNamingConvention" value="dummy"/>
+         <property name="Append" value="false"/>
+      </interaction-spec>
+   </endpoint-interaction>
+</adapter-config>

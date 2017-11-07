@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<wsdl:definitions name="OR08_DataFeedTrade" targetNamespace="http://oracle.com/sca/soapservice/KPEIMID/OR08-DataFeedTrade/OR08_DataFeedTrade" xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://oracle.com/sca/soapservice/KPEIMID/OR08-DataFeedTrade/OR08_DataFeedTrade" xmlns:bpws="http://schemas.xmlsoap.org/ws/2003/03/business-process/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+   <plnk:partnerLinkType name="OR08-DataFeedTrade">
+      <plnk:role name="sendNettedTrade_ptt">
+         <plnk:portType name="tns:sendNettedTrade_ptt"/>
+      </plnk:role>
+   </plnk:partnerLinkType>
+   <wsdl:import namespace="http://oracle.com/sca/soapservice/KPEIMID/OR08-DataFeedTrade/OR08_DataFeedTrade" location="OR08_DataFeedTrade.wsdl"/>
+</wsdl:definitions>

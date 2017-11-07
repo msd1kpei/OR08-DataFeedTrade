@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<tns:DataTradeDummy xmlns:tns="http://TargetNamespace.com/ServiceName" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://TargetNamespace.com/ServiceName file:/C:/jdeveloper-doc/OR08-DataFeedTrade/xsd/DataTradeDummy.xsd">
+   <tns:empty>
+      <tns:field/>
+      <tns:field/>
+   </tns:empty>
+</tns:DataTradeDummy>

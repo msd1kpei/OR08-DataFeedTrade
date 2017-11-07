@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<tns:Root-Element xmlns:tns="http://TargetNamespace.com/writeFileDataTrade" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://TargetNamespace.com/writeFileDataTrade file:/C:/jdeveloper-doc/OR08-DataFeedTrade/xsd/DataTradeOutput.xsd">
+   <tns:trade>
+      <tns:TradeNumber>tradeNumber3</tns:TradeNumber>
+      <tns:SellerBuyer/>
+      <tns:TradeDate>2011-01-17</tns:TradeDate>
+      <tns:SessionTrade>sessionTrade4</tns:SessionTrade>
+      <tns:BoardCode>boardCode5</tns:BoardCode>
+      <tns:SellerBroker>sellerBroker6</tns:SellerBroker>
+      <tns:SellerClient>sellerClient7</tns:SellerClient>
+      <tns:SellerType>sellerType8</tns:SellerType>
+      <tns:BrokerCode>brokerCode9</tns:BrokerCode>
+      <tns:BrokerClient>brokerClient10</tns:BrokerClient>
+      <tns:BrokerType>brokerType11</tns:BrokerType>
+      <tns:StockCode>stockCode12</tns:StockCode>
+      <tns:Volume>volume13</tns:Volume>
+      <tns:Price>price14</tns:Price>
+   </tns:trade>
+</tns:Root-Element>

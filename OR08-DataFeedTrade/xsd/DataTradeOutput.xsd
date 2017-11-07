@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:nxsd="http://xmlns.oracle.com/pcbpel/nxsd" xmlns:tns="http://www.kpei.co.id/writeFileDataTrade" targetNamespace="http://www.kpei.co.id/writeFileDataTrade" elementFormDefault="qualified" attributeFormDefault="unqualified" nxsd:version="NXSD" nxsd:stream="chars" nxsd:encoding="ASCII" nxsd:hasHeader="true" nxsd:headerLines="1" nxsd:headerLinesTerminatedBy="${eol}">
+   <xsd:element name="DataTrade">
+      <xsd:complexType>
+         <xsd:sequence>
+            <xsd:element name="trade" minOccurs="1" maxOccurs="unbounded">
+               <xsd:complexType>
+                  <xsd:sequence>
+                     <xsd:element name="TradeNumber" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|"/>
+                     <xsd:element name="SellerBuyer" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|"/>
+                     <xsd:element name="TradeDate" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|"/>
+                     <xsd:element name="SessionTrade" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|"/>
+                     <xsd:element name="BoardCode" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|"/>
+                     <xsd:element name="SellerBroker" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|"/>
+                     <xsd:element name="SellerClient" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|"/>
+                     <xsd:element name="SellerType" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|"/>
+                     <xsd:element name="BrokerCode" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|"/>
+                     <xsd:element name="BrokerClient" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|"/>
+                     <xsd:element name="BrokerType" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|"/>
+                     <xsd:element name="StockCode" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|"/>
+                     <xsd:element name="Volume" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="|"/>
+                     <xsd:element name="Price" type="xsd:string" nxsd:style="terminated" nxsd:terminatedBy="${eol}"/>
+                  </xsd:sequence>
+               </xsd:complexType>
+            </xsd:element>
+         </xsd:sequence>
+      </xsd:complexType>
+   </xsd:element>
+</xsd:schema>

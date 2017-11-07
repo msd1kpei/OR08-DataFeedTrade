@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<DataTrade xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.kpei.co.id/DataTradeRequest file:/C:/jdeveloper-doc/OR08-DataFeedTrade/xsd/DataTrade-request.xsd" xmlns="http://www.kpei.co.id/DataTradeRequest">
+   <header id="id1">
+      <asAt>2011-01-18T19:32:46.562</asAt>
+      <source>source2</source>
+   </header>
+   <isDummy>isDummy3</isDummy>
+   <session>string4</session>
+   <body>
+      <trade>
+         <tradeNumber>tradeNumber6</tradeNumber>
+         <sellerBuyer>
+            <sellerBroker/>
+            <stockCode/>
+            <boardCode/>
+            <tradeNumber/>
+            <tradeDate/>
+            <buyerBroker/>
+         </sellerBuyer>
+         <tradeDate>2011-01-18</tradeDate>
+         <sessionTrade>sessionTrade7</sessionTrade>
+         <boardCode>boardCode8</boardCode>
+         <sellerBroker>sellerBroker9</sellerBroker>
+         <sellerClient>sellerClient10</sellerClient>
+         <sellerType>sellerType11</sellerType>
+         <brokerCode>brokerCode12</brokerCode>
+         <brokerClient>brokerClient13</brokerClient>
+         <brokerType>brokerType14</brokerType>
+         <stockCode>stockCode15</stockCode>
+         <volume>volume16</volume>
+         <price>price17</price>
+      </trade>
+   </body>
+   <ext>
+      <value id="id18">string19</value>
+      <value id="id20">string21</value>
+      <value id="id22">string23</value>
+   </ext>
+</DataTrade>

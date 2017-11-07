@@ -1,0 +1,165 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<composite name="OR08-DataFeedTrade" applicationName="default" revision="2.5" label="soa_97a11448-15c6-4d99-ac1d-0c384e39859c" mode="active" state="on" home="/u01/app/Middleware/user_projects/domains/kpei/deployed-composites/OR08-DataFeedTrade_rev2.11.1/sca_OR08-DataFeedTrade_rev2.11.1/soa_97a11448-15c6-4d99-ac1d-0c384e39859c" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://xmlns.oracle.com/sca/1.0" xmlns:ui="http://xmlns.oracle.com/soa/designer/">
+   <import location="http://SERVICESERVER:7777/soa-infra/services/default/GE01-MessageMonitor/messageMonitorService.wsdl" importType="wsdl" namespace="http://oracle.com/sca/soapservice/KPEI-MIDDLEWARE/Ge01-messageMonitor/messageMonitorService"/>
+   <import location="http://SERVICESERVER:7777/kpei/GE02-FileUtility?wsdl" importType="wsdl" namespace="http://www.kpei.co.id/GE02-FileUtility"/>
+   <import location="writeFA.wsdl" importType="wsdl" namespace="http://xmlns.oracle.com/pcbpel/adapter/file/KPEIMID/OR08-DataFeedTrade/writeFA"/>
+   <import location="OR08_DataFeedTradeRef.wsdl" importType="wsdl" namespace="http://oracle.com/sca/soapservice/KPEIMID/OR08-DataFeedTrade/OR08_DataFeedTrade"/>
+   <import location="GE03-XMLUtilityRef.wsdl" importType="wsdl" namespace="http://oracle.com/sca/soapservice/kpei/GE03-XMLUtility/GE03_XMLUtility"/>
+   <import location="fileUtilityRef.wsdl" importType="wsdl" namespace="http://www.kpei.co.id/GE02-FileUtility"/>
+   <import location="http://SERVICESERVER:7777/soa-infra/services/default/GE03-XMLUtility/GE03-XMLUtility.wsdl" importType="wsdl" namespace="http://oracle.com/sca/soapservice/kpei/GE03-XMLUtility/GE03_XMLUtility"/>
+   <import location="DataTradeBPEL.wsdl" importType="wsdl" namespace="http://xmlns.oracle.com/ARIS_KPEI_PROJECT_jws/OR08_DataFeedTrade/DataTradeBPEL"/>
+   <import location="writeFileDataTrade.wsdl" importType="wsdl" namespace="http://xmlns.oracle.com/pcbpel/adapter/file/ARIS-KPEI-PROJECT/OR08-DataFeedTrade/writeFileDataTrade"/>
+   <import location="writeFileDataTradeDummy.wsdl" importType="wsdl" namespace="http://xmlns.oracle.com/pcbpel/adapter/file/ARIS-KPEI-PROJECT/OR08-DataFeedTrade/writeFileDataTradeDummy"/>
+   <import location="http://SERVICESERVER:7777/soa-infra/services/MWII/MWII-02-STPNettingBalances/STPNettingBalances.wsdl" importType="wsdl" namespace="http://oracle.com/sca/soapservice/MWII/MWII-02-STPNettingBalances/STPNettingBalances"/>
+   <import location="GE03-XMLUtilityRef1.wsdl" importType="wsdl" namespace="http://oracle.com/sca/soapservice/kpei/GE03-XMLUtility/GE03_XMLUtility"/>
+   <import namespace="http://oracle.com/sca/soapservice/mysqlTestInsert/CheckDesignatedStockServ/checkDesignatedStockService" location="http://SERVICESERVER:7777/soa-infra/services/MW/CheckDesignatedStockServ/checkDesignatedStockService.wsdl" importType="wsdl"/>
+   <import namespace="http://oracle.com/sca/soapservice/mysqlTestInsert/CheckDesignatedStockServ/checkDesignatedStockService" location="checkDesignatedStockServiceWrapper.wsdl" importType="wsdl"/>
+   <import namespace="http://oracle.com/sca/soapservice/KPEIMID/OR08-DataFeedTrade/OR08_DataFeedTrade"
+           location="MKBDRealTime.wsdl" importType="wsdl"/>
+   <import namespace="http://oracle.com/sca/soapservice/KPEIMID/OR08-DataFeedTrade/OR08_DataFeedTrade"
+           location="OR08_DataFeedTrade.wsdl" importType="wsdl"/>
+   <import namespace="http://oracle.com/sca/soapservice/kpei/GE03-XMLUtility/GE03_XMLUtility"
+           location="http://soavhn1.corp.kpei.co.id:7777/soa-infra/services/default/GE03-XMLUtility/GE03-XMLUtility.wsdl"
+           importType="wsdl"/>
+   <import namespace="http://www.kpei.co.id/GE02-FileUtility"
+           location="http://serviceserver:7777/kpei/GE02-FileUtility?wsdl"
+           importType="wsdl"/>
+   <import namespace="http://xmlns.oracle.com/pcbpel/adapter/ftp/ARIS-KPEI-PROJECT/OR08-DataFeedTrade/ftpMKBDRealTime"
+           location="ftpMKBDRealTime.wsdl" importType="wsdl"/>
+   <service name="PDC-DataTrade" ui:wsdlLocation="DataTradeBPEL.wsdl">
+      <interface.wsdl interface="http://xmlns.oracle.com/ARIS_KPEI_PROJECT_jws/OR08_DataFeedTrade/DataTradeBPEL#wsdl.interface(DataTradeBPEL)"/>
+      <binding.ws port="http://xmlns.oracle.com/ARIS_KPEI_PROJECT_jws/OR08_DataFeedTrade/DataTradeBPEL#wsdl.endpoint(PDC-DataTrade/DataTradeBPEL_pt)">
+         <property name="weblogic.wsee.wsat.transaction.flowOption"
+                   type="xs:string" many="false">NEVER</property>
+      </binding.ws>
+   </service>
+   <service name="OR08-DataFeedTrade" ui:wsdlLocation="OR08_DataFeedTrade.wsdl">
+      <interface.wsdl interface="http://oracle.com/sca/soapservice/KPEIMID/OR08-DataFeedTrade/OR08_DataFeedTrade#wsdl.interface(sendNettedTrade_ptt)"/>
+      <binding.ws port="http://oracle.com/sca/soapservice/KPEIMID/OR08-DataFeedTrade/OR08_DataFeedTrade#wsdl.endpoint(OR08-DataFeedTrade/sendNettedTrade_pt)">
+         <property name="weblogic.wsee.wsat.transaction.flowOption"
+                   type="xs:string" many="false">NEVER</property>
+      </binding.ws>
+   </service>
+   <service name="MKBDRealTime" ui:wsdlLocation="MKBDRealTime.wsdl">
+      <interface.wsdl interface="http://oracle.com/sca/soapservice/KPEIMID/OR08-DataFeedTrade/OR08_DataFeedTrade#wsdl.interface(send_ptt)"/>
+      <binding.ws port="http://oracle.com/sca/soapservice/KPEIMID/OR08-DataFeedTrade/OR08_DataFeedTrade#wsdl.endpoint(MKBDRealTime/send_pt)">
+         <property name="weblogic.wsee.wsat.transaction.flowOption"
+                   type="xs:string" many="false">NEVER</property>
+      </binding.ws>
+   </service>
+   <property name="auditLevel" many="false">Development</property>
+   <property name="validateSchema" type="xs:boolean" many="false">false</property>
+   <component name="DataTradeBPEL">
+      <implementation.bpel src="DataTradeBPEL.bpel"/>
+      <business-events/>
+   </component>
+   <component name="OR08DataFeedTradeBPEL">
+      <implementation.bpel src="OR08DataFeedTradeBPEL.bpel"/>
+      <property name="configuration.monitorLocation" type="xs:string"
+                many="false">OR08DataFeedTradeBPEL.monitor</property>
+      <property name="configuration.sensorActionLocation" type="xs:string"
+                many="false">OR08DataFeedTradeBPEL_sensorAction.xml</property>
+      <business-events/>
+   </component>
+   <component name="MKDBRealTime_Med">
+      <implementation.mediator src="MKDBRealTime_Med.mplan"/>
+   </component>
+   <component name="DataTrade_Med">
+      <implementation.mediator src="DataTrade_Med.mplan"/>
+   </component>
+   <reference name="writeFileDataTrade">
+      <interface.wsdl interface="http://xmlns.oracle.com/pcbpel/adapter/file/ARIS-KPEI-PROJECT/OR08-DataFeedTrade/writeFileDataTrade#wsdl.interface(Write_ptt)"/>
+      <binding.jca config="writeFileDataTrade_file.jca" portType="Write_ptt"/>
+   </reference>
+   <reference name="xmlUtilityRef"
+              ui:wsdlLocation="http://soavhn1.corp.kpei.co.id:7777/soa-infra/services/default/GE03-XMLUtility/GE03-XMLUtility.wsdl">
+      <interface.wsdl interface="http://oracle.com/sca/soapservice/kpei/GE03-XMLUtility/GE03_XMLUtility#wsdl.interface(GE03-XMLUtility)"/>
+      <binding.ws port="http://oracle.com/sca/soapservice/kpei/GE03-XMLUtility/GE03_XMLUtility#wsdl.endpoint(GE03-XMLUtility/GE03-XMLUtility_pt)"
+                  location="http://serviceserver:7777/soa-infra/services/default/GE03-XMLUtility/GE03-XMLUtility?WSDL"
+                  soapVersion="1.1">
+         <property name="weblogic.wsee.wsat.transaction.flowOption"
+                   type="xs:string" many="false">WSDLDriven</property>
+      </binding.ws>
+   </reference>
+   <reference name="fileUtilityRef"
+              ui:wsdlLocation="http://serviceserver:7777/kpei/GE02-FileUtility?wsdl">
+      <interface.wsdl interface="http://www.kpei.co.id/GE02-FileUtility#wsdl.interface(GE02-FileUtility)"/>
+      <binding.ws port="http://www.kpei.co.id/GE02-FileUtility#wsdl.endpoint(GE02-FileUtility/GE02-FileUtility)"
+                  location="http://serviceserver:7777/kpei/GE02-FileUtility?wsdl"
+                  soapVersion="1.2">
+         <property name="weblogic.wsee.wsat.transaction.flowOption"
+                   type="xs:string" many="false">WSDLDriven</property>
+      </binding.ws>
+   </reference>
+   <reference name="writeFA">
+      <interface.wsdl interface="http://xmlns.oracle.com/pcbpel/adapter/file/KPEIMID/OR08-DataFeedTrade/writeFA#wsdl.interface(Write_ptt)"/>
+      <binding.jca config="writeFA_file.jca" portType="Write_ptt"/>
+   </reference>
+   <reference name="writeFileDataTradeDummy">
+      <interface.wsdl interface="http://xmlns.oracle.com/pcbpel/adapter/file/ARIS-KPEI-PROJECT/OR08-DataFeedTrade/writeFileDataTradeDummy#wsdl.interface(Write_ptt)"/>
+      <binding.jca config="writeFileDataTradeDummy_file.jca" portType="Write_ptt"/>
+   </reference>
+   <reference name="checkDesignatedStockRef" ui:wsdlLocation="http://SERVICESERVER:7777/soa-infra/services/MW/CheckDesignatedStockServ/checkDesignatedStockService.wsdl">
+      <interface.wsdl interface="http://oracle.com/sca/soapservice/mysqlTestInsert/CheckDesignatedStockServ/checkDesignatedStockService#wsdl.interface(execute_ptt)"/>
+      <binding.ws port="http://oracle.com/sca/soapservice/mysqlTestInsert/CheckDesignatedStockServ/checkDesignatedStockService#wsdl.endpoint(checkDesignatedStockService/execute_pt)" location="http://SERVICESERVER:7777/soa-infra/services/MW/CheckDesignatedStockServ/checkDesignatedStockService?WSDL" soapVersion="1.1">
+         <property name="weblogic.wsee.wsat.transaction.flowOption"
+                   type="xs:string" many="false">WSDLDriven</property>
+      </binding.ws>
+   </reference>
+   <reference name="ftpMKBDRealTime" ui:wsdlLocation="ftpMKBDRealTime.wsdl">
+      <interface.wsdl interface="http://xmlns.oracle.com/pcbpel/adapter/ftp/ARIS-KPEI-PROJECT/OR08-DataFeedTrade/ftpMKBDRealTime#wsdl.interface(Put_ptt)"/>
+      <binding.jca config="ftpMKBDRealTime_ftp.jca"/>
+   </reference>
+   <wire>
+      <source.uri>OR08DataFeedTradeBPEL/writeFA</source.uri>
+      <target.uri>writeFA</target.uri>
+   </wire>
+   <wire>
+      <source.uri>OR08-DataFeedTrade</source.uri>
+      <target.uri>OR08DataFeedTradeBPEL/OR08-DataFeedTrade</target.uri>
+   </wire>
+   <wire>
+      <source.uri>DataTradeBPEL/writeFileDataTradeDummy</source.uri>
+      <target.uri>writeFileDataTradeDummy</target.uri>
+   </wire>
+   <wire>
+      <source.uri>OR08DataFeedTradeBPEL/xmlUtilityRef</source.uri>
+      <target.uri>xmlUtilityRef</target.uri>
+   </wire>
+   <wire>
+      <source.uri>DataTradeBPEL/writeFileDataTrade</source.uri>
+      <target.uri>writeFileDataTrade</target.uri>
+   </wire>
+   <wire>
+      <source.uri>DataTradeBPEL/xmlUtilityRef</source.uri>
+      <target.uri>xmlUtilityRef</target.uri>
+   </wire>
+   <wire>
+      <source.uri>OR08DataFeedTradeBPEL/fileUtilityRef</source.uri>
+      <target.uri>fileUtilityRef</target.uri>
+   </wire>
+   <wire>
+      <source.uri>OR08DataFeedTradeBPEL/checkDesignatedStockRef</source.uri>
+      <target.uri>checkDesignatedStockRef</target.uri>
+   </wire>
+   <wire>
+      <source.uri>MKBDRealTime</source.uri>
+      <target.uri>MKDBRealTime_Med/MKDBRealTime_Med</target.uri>
+   </wire>
+   <wire>
+      <source.uri>MKDBRealTime_Med/OR08DataFeedTradeBPEL.OR08-DataFeedTrade</source.uri>
+      <target.uri>OR08DataFeedTradeBPEL/OR08-DataFeedTrade</target.uri>
+   </wire>
+   <wire>
+      <source.uri>PDC-DataTrade</source.uri>
+      <target.uri>DataTrade_Med/DataTrade_Med</target.uri>
+   </wire>
+   <wire>
+      <source.uri>DataTrade_Med/DataTradeBPEL.PDC-DataTrade</source.uri>
+      <target.uri>DataTradeBPEL/PDC-DataTrade</target.uri>
+   </wire>
+   <wire>
+      <source.uri>OR08DataFeedTradeBPEL/ftpMKBDRealTime</source.uri>
+      <target.uri>ftpMKBDRealTime</target.uri>
+   </wire>
+</composite>

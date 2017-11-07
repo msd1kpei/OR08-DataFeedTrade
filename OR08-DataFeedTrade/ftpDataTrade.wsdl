@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<wsdl:definitions name="ftpDataTrade" targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/ftp/ARIS-KPEI-PROJECT/OR08-DataFeedTrade/ftpDataTrade" xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/ftp/ARIS-KPEI-PROJECT/OR08-DataFeedTrade/ftpDataTrade" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:imp1="http://www.kpei.co.id/writeFileDataTrade" xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/">
+   <plt:partnerLinkType name="Put_plt">
+      <plt:role name="Put_role">
+         <plt:portType name="tns:Put_ptt"/>
+      </plt:role>
+   </plt:partnerLinkType>
+   <wsdl:types>
+      <schema xmlns="http://www.w3.org/2001/XMLSchema">
+         <import namespace="http://www.kpei.co.id/writeFileDataTrade" schemaLocation="xsd/DataTradeOutput.xsd"/>
+      </schema>
+   </wsdl:types>
+   <wsdl:message name="Put_msg">
+      <wsdl:part name="body" element="imp1:DataTrade"/>
+   </wsdl:message>
+   <wsdl:portType name="Put_ptt">
+      <wsdl:operation name="Put">
+         <wsdl:input message="tns:Put_msg"/>
+      </wsdl:operation>
+   </wsdl:portType>
+</wsdl:definitions>

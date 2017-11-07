@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<wsdl:definitions name="REF_CA_delete" targetNamespace="http://xmlns.oracle.com/pcbpel/adapter/db/ARIS-KPEI-PROJECT/OR08-DataFeedTrade/REF_CA_delete" xmlns:tns="http://xmlns.oracle.com/pcbpel/adapter/db/ARIS-KPEI-PROJECT/OR08-DataFeedTrade/REF_CA_delete" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:plt="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:top="http://xmlns.oracle.com/pcbpel/adapter/db/top/REF_CA_delete">
+   <plt:partnerLinkType name="REF_CA_delete_plt">
+      <plt:role name="REF_CA_delete_role">
+         <plt:portType name="tns:REF_CA_delete_ptt"/>
+      </plt:role>
+   </plt:partnerLinkType>
+   <wsdl:types>
+      <schema xmlns="http://www.w3.org/2001/XMLSchema">
+         <import namespace="http://xmlns.oracle.com/pcbpel/adapter/db/top/REF_CA_delete" schemaLocation="xsd/REF_CA_delete_table.xsd"/>
+      </schema>
+   </wsdl:types>
+   <wsdl:message name="CorporateActionsCollection_msg">
+      <wsdl:part name="CorporateActionsCollection" element="top:CorporateActionsCollection"/>
+   </wsdl:message>
+   <wsdl:portType name="REF_CA_delete_ptt">
+      <wsdl:operation name="delete">
+         <wsdl:input message="tns:CorporateActionsCollection_msg"/>
+      </wsdl:operation>
+   </wsdl:portType>
+</wsdl:definitions>
