@@ -49,12 +49,51 @@
    </service>
    <property name="auditLevel" many="false">Development</property>
    <property name="validateSchema" type="xs:boolean" many="false">false</property>
+   <property name="originalProductVersion" type="xs:string" many="false">11.0.0.0.0</property>
+   <property name="productVersion" type="xs:string" many="false">12.2.1.3.0.170820</property>
+   <property name="compositeID" type="xs:string" many="false">7549243d-a0e1-4b37-a02c-598f858cff53</property>
    <component name="DataTradeBPEL">
       <implementation.bpel src="DataTradeBPEL.bpel"/>
+      <componentType xmlns="http://xmlns.oracle.com/sca/1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                     xmlns:ui="http://xmlns.oracle.com/soa/designer/">
+         <service name="PDC-DataTrade" ui:wsdlLocation="DataTradeBPEL.wsdl">
+            <interface.wsdl interface="http://xmlns.oracle.com/ARIS_KPEI_PROJECT_jws/OR08_DataFeedTrade/DataTradeBPEL#wsdl.interface(DataTradeBPEL)"/>
+         </service>
+         <reference name="writeFileDataTrade" ui:wsdlLocation="writeFileDataTrade.wsdl">
+            <interface.wsdl interface="http://xmlns.oracle.com/pcbpel/adapter/file/ARIS-KPEI-PROJECT/OR08-DataFeedTrade/writeFileDataTrade#wsdl.interface(Write_ptt)"/>
+         </reference>
+         <reference name="writeFileDataTradeDummy" ui:wsdlLocation="writeFileDataTradeDummy.wsdl">
+            <interface.wsdl interface="http://xmlns.oracle.com/pcbpel/adapter/file/ARIS-KPEI-PROJECT/OR08-DataFeedTrade/writeFileDataTradeDummy#wsdl.interface(Write_ptt)"/>
+         </reference>
+         <reference name="xmlUtilityRef" ui:wsdlLocation="GE03-XMLUtilityRef1.wsdl">
+            <interface.wsdl interface="http://oracle.com/sca/soapservice/kpei/GE03-XMLUtility/GE03_XMLUtility#wsdl.interface(GE03-XMLUtility)"/>
+         </reference>
+      </componentType>
       <business-events/>
    </component>
    <component name="OR08DataFeedTradeBPEL">
       <implementation.bpel src="OR08DataFeedTradeBPEL.bpel"/>
+      <componentType xmlns="http://xmlns.oracle.com/sca/1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                     xmlns:ui="http://xmlns.oracle.com/soa/designer/">
+         <service name="OR08-DataFeedTrade" ui:wsdlLocation="OR08_DataFeedTradeRef.wsdl">
+            <interface.wsdl interface="http://oracle.com/sca/soapservice/KPEIMID/OR08-DataFeedTrade/OR08_DataFeedTrade#wsdl.interface(sendNettedTrade_ptt)"/>
+         </service>
+         <reference name="xmlUtilityRef" ui:wsdlLocation="GE03-XMLUtilityRef.wsdl">
+            <interface.wsdl interface="http://oracle.com/sca/soapservice/kpei/GE03-XMLUtility/GE03_XMLUtility#wsdl.interface(GE03-XMLUtility)"/>
+         </reference>
+         <reference name="fileUtilityRef" ui:wsdlLocation="fileUtilityRef.wsdl">
+            <interface.wsdl interface="http://www.kpei.co.id/GE02-FileUtility#wsdl.interface(GE02-FileUtility)"/>
+         </reference>
+         <reference name="writeFA" ui:wsdlLocation="writeFA.wsdl">
+            <interface.wsdl interface="http://xmlns.oracle.com/pcbpel/adapter/file/KPEIMID/OR08-DataFeedTrade/writeFA#wsdl.interface(Write_ptt)"/>
+         </reference>
+         <reference name="checkDesignatedStockRef" ui:wsdlLocation="checkDesignatedStockServiceWrapper.wsdl">
+            <interface.wsdl interface="http://oracle.com/sca/soapservice/mysqlTestInsert/CheckDesignatedStockServ/checkDesignatedStockService#wsdl.interface(execute_ptt)"/>
+         </reference>
+         <reference name="ftpMKBDRealTime" ui:wsdlLocation="ftpMKBDRealTime.wsdl">
+            <interface.wsdl interface="http://xmlns.oracle.com/pcbpel/adapter/ftp/ARIS-KPEI-PROJECT/OR08-DataFeedTrade/ftpMKBDRealTime#wsdl.interface(Put_ptt)"/>
+         </reference>
+      </componentType>
       <property name="configuration.monitorLocation" type="xs:string"
                 many="false">OR08DataFeedTradeBPEL.monitor</property>
       <property name="configuration.sensorActionLocation" type="xs:string"
@@ -63,9 +102,27 @@
    </component>
    <component name="MKDBRealTime_Med">
       <implementation.mediator src="MKDBRealTime_Med.mplan"/>
+      <componentType xmlns="http://xmlns.oracle.com/sca/1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                     xmlns:ui="http://xmlns.oracle.com/soa/designer/">
+         <service name="MKDBRealTime_Med" ui:wsdlLocation="MKBDRealTime.wsdl">
+            <interface.wsdl interface="http://oracle.com/sca/soapservice/KPEIMID/OR08-DataFeedTrade/OR08_DataFeedTrade#wsdl.interface(send_ptt)"/>
+         </service>
+         <reference name="OR08DataFeedTradeBPEL.OR08-DataFeedTrade" ui:wsdlLocation="OR08_DataFeedTradeRef.wsdl">
+            <interface.wsdl interface="http://oracle.com/sca/soapservice/KPEIMID/OR08-DataFeedTrade/OR08_DataFeedTrade#wsdl.interface(sendNettedTrade_ptt)"/>
+         </reference>
+      </componentType>
    </component>
    <component name="DataTrade_Med">
       <implementation.mediator src="DataTrade_Med.mplan"/>
+      <componentType xmlns="http://xmlns.oracle.com/sca/1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                     xmlns:ui="http://xmlns.oracle.com/soa/designer/">
+         <service name="DataTrade_Med" ui:wsdlLocation="DataTradeBPEL.wsdl">
+            <interface.wsdl interface="http://xmlns.oracle.com/ARIS_KPEI_PROJECT_jws/OR08_DataFeedTrade/DataTradeBPEL#wsdl.interface(DataTradeBPEL)"/>
+         </service>
+         <reference name="DataTradeBPEL.PDC-DataTrade" ui:wsdlLocation="DataTradeBPEL.wsdl">
+            <interface.wsdl interface="http://xmlns.oracle.com/ARIS_KPEI_PROJECT_jws/OR08_DataFeedTrade/DataTradeBPEL#wsdl.interface(DataTradeBPEL)"/>
+         </reference>
+      </componentType>
    </component>
    <reference name="writeFileDataTrade">
       <interface.wsdl interface="http://xmlns.oracle.com/pcbpel/adapter/file/ARIS-KPEI-PROJECT/OR08-DataFeedTrade/writeFileDataTrade#wsdl.interface(Write_ptt)"/>

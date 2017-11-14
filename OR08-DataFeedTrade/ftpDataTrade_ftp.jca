@@ -1,5 +1,5 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<adapter-config name="ftpDataTrade" adapter="Ftp Adapter" wsdlLocation="ftpDataTrade.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
+<?xml version="1.0" encoding="UTF-8"?>
+<adapter-config name="ftpDataTrade" adapter="ftp" wsdlLocation="ftpDataTrade.wsdl" xmlns="http://platform.integration.oracle/blocks/adapter/fw/metadata">
    <connection-factory location="eis/Ftp/FtpAdapterPDC" adapterRef=""/>
    <endpoint-interaction portType="Put_ptt" operation="Put">
       <interaction-spec className="oracle.tip.adapter.ftp.outbound.FTPInteractionSpec">
